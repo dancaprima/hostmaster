@@ -22,8 +22,7 @@ class Login extends Component {
   async handleSubmit(reqBody) {
     try {
       const payload = await api.post(LOGIN, reqBody);
-      localStorage.setItem('access_token', payload.data.data.access_token);
-
+      // localStorage.setItem('access_token', payload.data.data.access_token);
       this.props.history.push('/dashboard/home');
       alert('sukses');
     } catch (e) {

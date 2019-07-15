@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
+// import ApexCharts from 'apexcharts';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 export class Home extends Component {
   render() {
-    return <div>Home</div>;
+    return (
+      <div className="row">
+        <div className="col-sm-4">
+          <Card>
+            <CardContent />
+          </Card>
+        </div>
+      </div>
+    );
   }
 }
 
