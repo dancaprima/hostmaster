@@ -1,3 +1,9 @@
-const baseUrl = 'http://labs.diq.my.id:5000/';
+const baseUrl = 'http://labs.diq.my.id:5000/api';
 
-export { baseUrl };
+const REGISTER = '/register';
+
+const LOGIN = '/login';
+
+const USERS = '/users';
+
+export { baseUrl, REGISTER, LOGIN, USERS };

@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { baseURL } from './url';
+import { baseUrl } from './urls';
 
 const token = localStorage.getItem('access_token') || false;
 
 export default axios.create({
-  baseURL,
+  baseURL: baseUrl,
   headers: { Authorization: `${token}` }
 });

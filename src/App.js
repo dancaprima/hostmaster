@@ -7,12 +7,14 @@ import {
   BrowserRouter as Router,
   Route,
   Link,
-  Redirect
+  Redirect,
+  Switch
 } from 'react-router-dom';
-import Login from './containers/Login/Auth';
+import Login from './containers/Login/Login';
 import Register from './containers/Register';
 import Dashboard from './containers/Dashboard';
 
+const isTokenExist = localStorage.getItem('access_token');
 const isAuthenticated = true;
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -28,7 +30,7 @@ function App() {
   return (
     <Router>
       <div>
-        <nav>
+        {/* <nav>
           <ul>
             <li>
               <Link to="/login">Login</Link>
@@ -37,24 +39,14 @@ function App() {
               <Link to="/register">Register</Link>
             </li>
           </ul>
-        </nav>
-        <Route
-          path="/dashboard"
-          render={props =>
-            isAuthenticated ? (
-              <Dashboard {...props} />
-            ) : (
-              <Redirect
-                to={{
-                  pathname: '/login',
-                  state: { from: props.location }
-                }}
-              />
-            )
-          }
-        />
-        <Route path="/login" exact component={Login} />
-        <Route path="/register" component={Register} />
+        </nav> */}
+        <Switch>
+          <Redirect exact from="/" to="/login" />
+
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/login" exact component={Login} />
+          <Route path="/register" component={Register} />
+        </Switch>
       </div>
     </Router>
   );

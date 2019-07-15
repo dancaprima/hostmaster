@@ -7,6 +7,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import './Login.css';
 import FormErrorMsg from '../../components/FormErrorMsg';
 import Button from '@material-ui/core/Button';
+import api from '../../utils/api';
+import { LOGIN } from '../../utils/urls';
+import { withRouter } from 'react-router';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
@@ -16,12 +19,17 @@ const LoginSchema = Yup.object().shape({
 });
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-    // this.state = {
-    //   username: '',
-    //   password: ''
-    // };
+  async handleSubmit(reqBody) {
+    try {
+      const payload = await api.post(LOGIN, reqBody);
+      localStorage.setItem('access_token', payload.data.data.access_token);
+
+      this.props.history.push('/dashboard/home');
+      alert('sukses');
+    } catch (e) {
+      console.log(e);
+      alert('gagal');
+    }
   }
   render() {
     return (
@@ -37,7 +45,7 @@ class Login extends Component {
                 validationSchema={LoginSchema}
                 onSubmit={(values, actions) => {
                   // same shape as initial values
-                  this.props.login(values);
+                  this.handleSubmit(values);
                   // setTimeout(() => {
                   //   alert(JSON.stringify(values, null, 2));
                   //   actions.setSubmitting(false);
@@ -98,7 +106,7 @@ class Login extends Component {
                         color="primary"
                         fullWidth
                       >
-                        Primary
+                        LOGIN
                       </Button>
                     </div>
                   </Form>
@@ -112,4 +120,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default withRouter(Login);

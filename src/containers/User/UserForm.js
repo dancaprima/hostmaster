@@ -4,67 +4,94 @@ import CardContent from '@material-ui/core/CardContent';
 import TextField from '@material-ui/core/TextField';
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import './Login/Login.css';
 import Button from '@material-ui/core/Button';
-import FormErrorMsg from '../components/FormErrorMsg';
-import api from '../utils/api';
-import { REGISTER } from '../utils/urls';
+import FormErrorMsg from '../../components/FormErrorMsg';
+import api from '../../utils/api';
+import { USERS } from '../../utils/urls';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
-const RegisterSchema = Yup.object().shape({
-  email: Yup.string()
-    .required('Harus Di isi')
-    .email('Email tidak sesuai format'),
-  password: Yup.string().required('Harus Di isi')
+
+const LoginSchema = Yup.object().shape({
+  name: Yup.string().required('Harus Di isi'),
+  job: Yup.string().required('Harus Di isi')
 });
 
-class Register extends Component {
-  async handleSubmit(reqBody) {
+class UserForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      job: '',
+      data: null
+    };
+  }
+  async componentDidMount() {
+    const paramId = this.props.match.params.id;
     try {
-      const payload = await api.post(REGISTER, reqBody);
-      this.props.history.push('/login');
-      alert('sukses');
+      if (paramId) {
+        const payload = await api.get(`${USERS}/${paramId}`);
+        this.setState({
+          name: payload.data.data.name,
+          job: payload.data.data.job,
+          data: payload.data.data
+        });
+      }
+    } catch (e) {
+      alert('gagal load');
+    }
+  }
+  async handleSubmit(reqBody) {
+    const paramId = this.props.match.params.id;
+
+    try {
+      if (paramId) {
+        const payload = await api.put(`${USERS}/${paramId}`, reqBody);
+        alert('sukses edit');
+      } else {
+        const payload = await api.post(USERS, reqBody);
+        alert('sukses post');
+      }
+      this.props.history.push('/dashboard/users');
     } catch (e) {
       console.log(e);
-      alert('gagal');
     }
   }
   render() {
     return (
-      <div className="login-wrapper">
-        <div className="login-box">
+      <div className="row">
+        <div className="col-sm-6 offset-sm-3">
           <Card>
             <CardContent>
               <Formik
                 initialValues={{
-                  email: '',
-                  password: ''
+                  name: this.state.name,
+                  job: this.state.job
                 }}
-                validationSchema={RegisterSchema}
+                validationSchema={LoginSchema}
                 onSubmit={(values, actions) => {
                   // same shape as initial values
+                  this.handleSubmit(values);
                   // setTimeout(() => {
                   //   alert(JSON.stringify(values, null, 2));
                   //   actions.setSubmitting(false);
                   // }, 2000);
-                  this.handleSubmit(values);
                 }}
               >
                 {({ errors, touched, isSubmitting, isValid }) => (
                   <Form>
                     <div className="row">
-                      <div className="col-sm-12 text-center mt-3">
-                        <h3>REGISTER</h3>
+                      <div className="col-sm-6 offset-sm-3 text-center  mt-3">
+                        <h5 className="text-center">User Form</h5>
+                        <h3>{this.state.data && this.state.data.email}</h3>
                       </div>
                       <div className="col-sm-12">
                         <Field
-                          name="email"
+                          name="name"
                           render={({ field }) => {
                             return (
                               <TextField
-                                error={errors.email && touched.email}
-                                id="email"
-                                label="Email"
+                                error={errors.name && touched.email}
+                                id="name"
+                                label="Name"
                                 fullWidth
                                 {...field}
                                 margin="normal"
@@ -72,18 +99,17 @@ class Register extends Component {
                             );
                           }}
                         />
-                        <ErrorMessage component={FormErrorMsg} name="email" />
+                        <ErrorMessage component={FormErrorMsg} name="name" />
                       </div>
                       <div className="col-sm-12">
                         <Field
-                          name="password"
+                          name="job"
                           render={({ field }) => {
                             return (
                               <TextField
-                                error={errors.password && touched.password}
-                                id="password"
-                                label="Password"
-                                type="password"
+                                error={errors.job && touched.password}
+                                id="job"
+                                label="Job"
                                 fullWidth
                                 {...field}
                                 margin="normal"
@@ -91,10 +117,7 @@ class Register extends Component {
                             );
                           }}
                         />
-                        <ErrorMessage
-                          component={FormErrorMsg}
-                          name="password"
-                        />
+                        <ErrorMessage component={FormErrorMsg} name="job" />
                       </div>
                     </div>
                     <div className="mt-5">
@@ -104,19 +127,8 @@ class Register extends Component {
                         color="primary"
                         fullWidth
                       >
-                        REGISTER
+                        SUBMIT
                       </Button>
-                      <Link to={'/login'}>
-                        <div className="mt-3">
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            fullWidth
-                          >
-                            LOGIN
-                          </Button>
-                        </div>
-                      </Link>
                     </div>
                   </Form>
                 )}
@@ -129,4 +141,4 @@ class Register extends Component {
   }
 }
 
-export default withRouter(Register);
+export default withRouter(UserForm);
