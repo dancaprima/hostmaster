@@ -58,6 +58,23 @@ export default class UserView extends React.Component {
     }
   }
 
+  async deleteItem(id) {
+    try {
+      const payload = await api.delete(`${USERS}/${id}`);
+      alert('sukses menghapus');
+      const data = this.state.data.filter(el => el.id !== id);
+
+      this.setState({
+        data
+      });
+
+      console.log(payload);
+    } catch (e) {
+      console.log(e);
+      alert('gagal menghapus');
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -90,7 +107,7 @@ export default class UserView extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.state.data.map(row => (
+                {this.state.data.map((row, index) => (
                   <TableRow key={row.id}>
                     <TableCell component="th" scope="row">
                       <Avatar alt={row.email} src={row.avatar} />
@@ -99,15 +116,21 @@ export default class UserView extends React.Component {
                     <TableCell align="right">{row.first_name}</TableCell>
                     <TableCell align="right">{row.last_name}</TableCell>
                     <TableCell align="right">
-                      <Link to={`/dashboard/users/edit/${row.id}`}>
-                        <Button
-                          type="submit"
-                          variant="contained"
-                          color="primary"
-                        >
+                      <Link
+                        to={`/dashboard/users/edit/${row.id}`}
+                        className="mr-2"
+                      >
+                        <Button variant="contained" color="primary">
                           Edit
                         </Button>
                       </Link>
+                      <Button
+                        onClick={() => this.deleteItem(row.id)}
+                        variant="contained"
+                        color="secondary"
+                      >
+                        Delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
