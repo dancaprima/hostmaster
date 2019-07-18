@@ -19,8 +19,10 @@ class UserForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      job: '',
+      form: {
+        name: '',
+        job: ''
+      },
       data: null
     };
   }
@@ -30,8 +32,10 @@ class UserForm extends Component {
       if (paramId) {
         const payload = await api.get(`${USERS}/${paramId}`);
         this.setState({
-          name: payload.data.data.name,
-          job: payload.data.data.job,
+          form: {
+            name: payload.data.data.first_name,
+            job: ''
+          },
           data: payload.data.data
         });
       }
@@ -56,16 +60,16 @@ class UserForm extends Component {
     }
   }
   render() {
+    const paramId = this.props.match.params.id;
+
     return (
       <div className="row">
         <div className="col-sm-6 offset-sm-3">
           <Card>
             <CardContent>
               <Formik
-                initialValues={{
-                  name: this.state.name,
-                  job: this.state.job
-                }}
+                initialValues={this.state.form}
+                enableInitialize={true}
                 validationSchema={LoginSchema}
                 onSubmit={(values, actions) => {
                   // same shape as initial values
@@ -127,7 +131,7 @@ class UserForm extends Component {
                         color="primary"
                         fullWidth
                       >
-                        SUBMIT
+                        {paramId ? 'EDIT' : 'SUBMIT'}
                       </Button>
                     </div>
                   </Form>

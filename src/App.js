@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -14,7 +13,6 @@ import Login from './containers/Login/Login';
 import Register from './containers/Register';
 import Dashboard from './containers/Dashboard';
 
-const isTokenExist = localStorage.getItem('access_token');
 const isAuthenticated = true;
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
